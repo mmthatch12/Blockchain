@@ -68,7 +68,7 @@ if __name__ == '__main__':
         # TODO: Get the block from `data` and use it to look for a new proof
 
         new_proof = data['last_block']
-
+        proof_of_work(new_proof)
         # When found, POST it to the server {"proof": new_proof, "id": id}
         post_data = {"proof": new_proof, "id": id}
 
@@ -77,6 +77,7 @@ if __name__ == '__main__':
         coins = 0
 
         if data['message'] == "New Block Forged":
+            coins += 1
             print(coins)
         else:
             print(data['message'])
