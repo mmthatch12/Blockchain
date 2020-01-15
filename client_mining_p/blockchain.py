@@ -114,15 +114,22 @@ def mine():
 
     if proof and bId:
         previous_hash = blockchain.hash(blockchain.last_block)
-        block = blockchain.new_block(proof, previous_hash)
-        response = {
+        block_string = json.dumps(blockchain.last_block, sort_keys=True)
+        if blockchain.valid_proof(block_string, proof):
+            blockchain.new_block(proof, previous_hash)
+            response = {
                 'message': 'New Block Forged',
-                'block': block
             }
-        return jsonify(response), 200
+            return jsonify(response), 200
+        else:
+            response = {
+                'message': 'Not valid',
+            }
+            return jsonify(response), 200  
+        
     else:
         response = {
-        'message': 'proof and id are not present'
+            'message': 'proof or id are not present'
         }
         return jsonify(response), 400
     # Run the proof of work algorithm to get the next proof
@@ -145,7 +152,7 @@ def full_chain():
     return jsonify(response), 200
 
 # ADD AN ENDPOINT CALLED LAST_BLOCK THAT RETURNS THE LAST BLOCK IN THE CHAIN
-@app.route('/lastblock', methods=['GET'])
+@app.route('/last_block', methods=['GET'])
 def last_block():
     last_b = blockchain.last_block
     response = {
@@ -155,4 +162,4 @@ def last_block():
 
 # Run the program on port 5000
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='localhost', port=5000, debug=True)
