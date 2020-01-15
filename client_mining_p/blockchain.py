@@ -103,7 +103,7 @@ node_identifier = str(uuid4()).replace('-', '')
 # Instantiate the Blockchain
 blockchain = Blockchain()
 
-# MODIFY THE MINE ENDPOINT TO INSTEAD RECEIVE AND VALIDATE OR REJECT A NEW PROFF SENT BY A CLIENT
+# MODIFY THE MINE ENDPOINT TO INSTEAD RECEIVE AND VALIDATE OR REJECT A NEW PROOF SENT BY A CLIENT
 # IT SHOULD ACCEPT A POST
 @app.route('/mine', methods=['POST'])
 def mine():
@@ -113,8 +113,11 @@ def mine():
     bId = data['id']
 
     if proof and bId:
+        previous_hash = blockchain.hash(blockchain.last_block)
+        block = blockchain.new_block(proof, previous_hash)
         response = {
-                'message': 'success'
+                'message': 'New Block Forged',
+                'block': block
             }
         return jsonify(response), 200
     else:
